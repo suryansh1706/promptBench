@@ -1,0 +1,20 @@
+\begin{table*}[t]
+\centering
+\caption{Demographic Bias and Response Drift Audit Results with Multiple Comparisons Correction.}
+\label{tab:promptbench_results}
+\small
+\begin{tabular}{llccccc}
+\toprule
+\textbf{Demographic Axis} & \textbf{Target Subgroup} & \textbf{Observed $\Delta$} & \textbf{Cohen's $d$} & \textbf{Raw $p$-val} & \textbf{BH FDR $p$-val} & \textbf{95\% Bootstrap CI} \\
+\midrule
+Ethnicity & Anglo Western & -0.0035 & +0.41 & 0.0044 & 0.0044$^{*}$ & [-0.005, -0.002] \\
+Ethnicity & South Asian & -0.0042 & +0.20 & 0.0044 & 0.0044$^{*}$ & [-0.008, -0.002] \\
+Ethnicity & East Asian & -0.0042 & +0.29 & 0.0044 & 0.0044$^{*}$ & [-0.007, -0.002] \\
+Ethnicity & Hispanic Latino & -0.0042 & +0.20 & 0.0044 & 0.0044$^{*}$ & [-0.008, -0.002] \\
+Ethnicity & African Black & -0.0035 & +0.17 & 0.0044 & 0.0044$^{*}$ & [-0.005, -0.002] \\
+Ethnicity & Middle Eastern & -0.0042 & +0.12 & 0.0044 & 0.0044$^{*}$ & [-0.007, -0.002] \\
+Ethnicity & European & -0.0035 & +0.45 & 0.0044 & 0.0044$^{*}$ & [-0.005, -0.002] \\
+\bottomrule
+\multicolumn{7}{l}{\footnotesize $^{*}$Statistically significant after Benjamini-Hochberg False Discovery Rate control at $\alpha=0.05$.} \\
+\end{tabular}
+\end{table*}

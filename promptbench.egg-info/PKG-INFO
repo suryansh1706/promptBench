@@ -1,0 +1,14 @@
+Metadata-Version: 2.4
+Name: promptbench
+Version: 1.0.0
+Summary: A Framework for Auditing Demographic Bias in Large Language Model Responses
+Author: Parth Mudgal, Suryansh Rastogi, Siddharth Sharma
+Requires-Python: >=3.9
+Requires-Dist: pandas>=2.0.0
+Requires-Dist: scipy>=1.10.0
+Requires-Dist: streamlit>=1.30.0
+Requires-Dist: matplotlib>=3.7.0
+Dynamic: author
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary

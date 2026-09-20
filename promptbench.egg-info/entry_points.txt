@@ -1,0 +1,2 @@
+[console_scripts]
+promptbench = promptbench.cli:main
