@@ -9,6 +9,7 @@ import time
 from .providers.base import BaseLLMProvider
 from .providers.gemini_provider import GeminiProvider
 from .providers.openai_provider import OpenAIProvider
+from .providers.groq_provider import GroqProvider
 from .providers.mock_provider import MockLLMProvider
 from ..core.types import PerturbedPrompt, ModelResponse
 from ..core.cache import ResponseCache
@@ -26,10 +27,15 @@ class QueryOrchestrator:
         provider: BaseLLMProvider,
         cache: Optional[ResponseCache] = None,
         max_workers: int = 4,
+        request_delay_seconds: float = 0.0,
     ):
         self.provider = provider
         self.cache = cache
         self.max_workers = max_workers
+        # Fixed pause between sequential requests, to stay under a provider's
+        # tokens-per-minute rate limit even when max_workers <= 1. 0 disables it
+        # (e.g. for the mock provider, which has no external rate limit).
+        self.request_delay_seconds = request_delay_seconds
 
     @classmethod
     def from_config(cls, config: PromptBenchConfig) -> "QueryOrchestrator":
@@ -37,6 +43,7 @@ class QueryOrchestrator:
         cache = ResponseCache(cache_dir=config.cache_dir) if config.enable_cache else None
         
         provider_name = config.provider.provider_name.lower()
+        request_delay_seconds = 0.0
         if provider_name == "gemini":
             provider = GeminiProvider(
                 model_name=config.provider.model_name,
@@ -55,6 +62,19 @@ class QueryOrchestrator:
                 base_delay=config.backoff_base_seconds,
                 max_delay=config.backoff_max_seconds,
             )
+        elif provider_name == "groq":
+            provider = GroqProvider(
+                model_name=config.provider.model_name,
+                temperature=config.provider.temperature,
+                seed=config.provider.seed,
+                max_retries=config.max_retries,
+                base_delay=config.backoff_base_seconds,
+                max_delay=config.backoff_max_seconds,
+            )
+            # Groq's free tier caps at 8,000 tokens/minute. Each response here can
+            # run several hundred tokens, so a fixed pause between requests keeps
+            # us comfortably under that ceiling even with max_concurrency=1.
+            request_delay_seconds = 2.0
         else:
             provider = MockLLMProvider(
                 model_name=config.provider.model_name,
@@ -66,6 +86,7 @@ class QueryOrchestrator:
             provider=provider,
             cache=cache,
             max_workers=config.max_concurrency,
+            request_delay_seconds=request_delay_seconds,
         )
 
     def _query_single_prompt(self, prompt: PerturbedPrompt) -> ModelResponse:
@@ -121,6 +142,11 @@ class QueryOrchestrator:
                 completed_count += 1
                 if progress_callback:
                     progress_callback(completed_count, total, resp)
+                # Pace requests to respect the provider's rate limit. Skipped for
+                # the mock provider (no external API, no limit to respect) and
+                # skipped after the very last prompt (nothing left to wait for).
+                if self.request_delay_seconds > 0 and not isinstance(self.provider, MockLLMProvider) and completed_count < total:
+                    time.sleep(self.request_delay_seconds)
             return responses
 
         with ThreadPoolExecutor(max_workers=self.max_workers) as executor:

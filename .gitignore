@@ -1,0 +1,12 @@
+# Groq debugging output — not real research results
+results_groq_test*/
+
+# Local response cache — regenerated automatically, not meant to be shared
+.cache/
+
+# Python bytecode cache — auto-generated, environment-specific
+__pycache__/
+*.pyc
+
+# Leftover debugging artifact
+test_payload.json

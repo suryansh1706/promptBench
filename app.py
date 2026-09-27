@@ -24,6 +24,7 @@ from promptbench.query_pipeline.orchestrator import QueryOrchestrator
 from promptbench.query_pipeline.providers.mock_provider import MockLLMProvider
 from promptbench.query_pipeline.providers.gemini_provider import GeminiProvider
 from promptbench.query_pipeline.providers.openai_provider import OpenAIProvider
+from promptbench.query_pipeline.providers.groq_provider import GroqProvider
 from promptbench.metrics.scorer import BiasScorer
 from promptbench.metrics.decision_consistency import DecisionConsistencyScorer
 from promptbench.statistical_testing.engine import StatisticalTestingEngine
@@ -142,11 +143,12 @@ selected_scenario = st.sidebar.selectbox(
 
 provider_choice = st.sidebar.selectbox(
     "LLM Provider Engine",
-    options=["mock", "gemini", "openai"],
+    options=["mock", "gemini", "openai", "groq"],
     format_func=lambda x: {
         "mock": "Mock LLM (Deterministic Demo)",
         "gemini": "Google Gemini API",
         "openai": "OpenAI API",
+        "groq": "Groq API",
     }[x],
 )
 
@@ -163,6 +165,12 @@ elif provider_choice == "openai":
     if api_key_input:
         import os
         os.environ["OPENAI_API_KEY"] = api_key_input
+elif provider_choice == "groq":
+    model_choice = st.sidebar.selectbox("Groq Model", ["openai/gpt-oss-20b", "openai/gpt-oss-120b"])
+    api_key_input = st.sidebar.text_input("Groq API Key", type="password", placeholder="gsk_...")
+    if api_key_input:
+        import os
+        os.environ["GROQ_API_KEY"] = api_key_input
 
 samples_count = st.sidebar.slider("Names per Culture/Gender Group", min_value=1, max_value=3, value=2)
 

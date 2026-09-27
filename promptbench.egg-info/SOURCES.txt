@@ -27,6 +27,7 @@ promptbench/query_pipeline/orchestrator.py
 promptbench/query_pipeline/providers/__init__.py
 promptbench/query_pipeline/providers/base.py
 promptbench/query_pipeline/providers/gemini_provider.py
+promptbench/query_pipeline/providers/groq_provider.py
 promptbench/query_pipeline/providers/mock_provider.py
 promptbench/query_pipeline/providers/openai_provider.py
 promptbench/reporting/__init__.py

@@ -54,7 +54,7 @@ class PromptBenchConfig:
     
     # Query resilience & rate limiting
     enable_cache: bool = True
-    max_concurrency: int = 8
+    max_concurrency: int = 1
     max_retries: int = 5
     backoff_base_seconds: float = 1.0
     backoff_max_seconds: float = 30.0

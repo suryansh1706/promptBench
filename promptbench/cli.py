@@ -18,6 +18,7 @@ from .query_pipeline.providers.base import BaseLLMProvider
 from .query_pipeline.providers.mock_provider import MockLLMProvider
 from .query_pipeline.providers.gemini_provider import GeminiProvider
 from .query_pipeline.providers.openai_provider import OpenAIProvider
+from .query_pipeline.providers.groq_provider import GroqProvider
 from .metrics.scorer import BiasScorer
 from .metrics.decision_consistency import DecisionConsistencyScorer
 from .statistical_testing.engine import StatisticalTestingEngine
@@ -157,7 +158,7 @@ def main():
     # Subcommand: audit
     audit_parser = subparsers.add_parser("audit", help="Run end-to-end bias audit")
     audit_parser.add_argument("--scenario", type=str, default="job_swe_001", help="Template ID or 'all'")
-    audit_parser.add_argument("--provider", type=str, default="mock", choices=["mock", "gemini", "openai"])
+    audit_parser.add_argument("--provider", type=str, default="mock", choices=["mock", "gemini", "openai","groq"])
     audit_parser.add_argument("--model", type=str, default="mock-llm-v1", help="Model name")
     audit_parser.add_argument("--temperature", type=float, default=0.0, help="Sampling temperature")
     audit_parser.add_argument("--seed", type=int, default=42, help="Random seed")
